@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Voice Assistant</title>
+    <script>
+        function startListening() {
+            const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+            recognition.lang = 'en-GB'; // Adjust based on your preference
+            recognition.onresult = function(event) {
+                const command = event.results[0][0].transcript;
+                fetch('/process_command', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ command })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    alert(data.response); // Display the response from the server
+                });
+            };
+            recognition.start();
+        }
+    </script>
+</head>
+<body>
+    <h1>Voice Assistant</h1>
+    <button onclick="startListening()">Speak</button>
+</body>
+</html>
